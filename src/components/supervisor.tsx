@@ -26,13 +26,13 @@ export function SupervisorView({ me }: { me: StaffId }) {
   return (
     <div className="flex min-h-dvh flex-col">
       <TopBar me={me} title={staffById(me)?.role === "maintenance" ? "Maintenance & board" : "Hotel board"} />
-      <main className="flex-1 space-y-6 px-4 pt-4 pb-[max(env(safe-area-inset-bottom),24px)]">
-        <div className="grid grid-cols-4 gap-2">
+      <main className="flex-1 space-y-10 px-5 pt-6 pb-[max(env(safe-area-inset-bottom),24px)]">
+        <div className="grid grid-cols-4 gap-3">
           {(["dirty", "cleaning", "clean", "ready"] as RoomStatus[]).map((s) => {
             const m = STATUS[s];
             const Icon = m.icon;
             return (
-              <div key={s} className={cn("rounded-2xl p-2.5", m.bg)}>
+              <div key={s} className={cn("rounded-2xl p-3", m.bg)}>
                 <Icon className={cn("size-4", m.fg)} />
                 <p className={cn("tabular mt-1 text-2xl font-bold", m.fg)}>{counts(s)}</p>
                 <p className="text-[11px] leading-tight font-medium text-foreground/70">{m.short}</p>
@@ -42,11 +42,11 @@ export function SupervisorView({ me }: { me: StaffId }) {
         </div>
 
         <section>
-          <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold">
+          <h2 className="mb-4 flex items-center gap-2 text-[15px] font-semibold">
             <Flag className="size-4 text-st-dirty" /> Reported from rooms
             <span className="tabular rounded-full bg-muted px-2 text-xs leading-5">{openIssues.length}</span>
           </h2>
-          <div className="space-y-2">
+          <div className="space-y-4">
             <AnimatePresence initial={false} mode="popLayout">
               {openIssues.map((i) => (
                 <IssueCard key={i.id} issue={i} />
@@ -57,11 +57,11 @@ export function SupervisorView({ me }: { me: StaffId }) {
         </section>
 
         <section>
-          <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold">
+          <h2 className="mb-4 flex items-center gap-2 text-[15px] font-semibold">
             <Sparkles className="size-4 text-st-clean" /> Ready to inspect
             <span className="tabular rounded-full bg-muted px-2 text-xs leading-5">{toInspect.length}</span>
           </h2>
-          <div className="space-y-2">
+          <div className="space-y-4">
             <AnimatePresence initial={false} mode="popLayout">
               {toInspect.map((r) => (
                 <InspectCard key={r.id} room={r} onSendBack={() => setSendBack(r.id)} />
@@ -72,13 +72,13 @@ export function SupervisorView({ me }: { me: StaffId }) {
         </section>
 
         <section>
-          <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold">
+          <h2 className="mb-4 flex items-center gap-2 text-[15px] font-semibold">
             <BedDouble className="size-4" /> All rooms
           </h2>
           {[1, 2, 3].map((f) => (
-            <div key={f} className="mb-3">
-              <p className="mb-1.5 text-xs font-semibold text-muted-foreground">Floor {f}</p>
-              <div className="grid grid-cols-4 gap-2">
+            <div key={f} className="mb-6">
+              <p className="mb-2.5 text-xs font-semibold tracking-wider text-muted-foreground uppercase">Floor {f}</p>
+              <div className="grid grid-cols-4 gap-2.5">
                 {state.rooms
                   .filter((r) => r.floor === f)
                   .sort((a, b) => a.id.localeCompare(b.id))
@@ -118,7 +118,7 @@ function IssueCard({ issue }: { issue: Issue }) {
   const by = staffById(issue.by)!;
   const pause = !!m.pauseFor;
   return (
-    <motion.article {...cardMotion} className="rounded-2xl border bg-card p-3">
+    <motion.article {...cardMotion} className="rounded-3xl border bg-card p-5">
       <div className="flex items-start gap-3">
         <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl", pause ? "bg-st-cleaning-bg text-st-cleaning" : "bg-st-blocked-bg text-st-blocked")}>
           <Icon className="size-5" />
@@ -139,7 +139,7 @@ function IssueCard({ issue }: { issue: Issue }) {
       </div>
       <Button
         variant="outline"
-        className="press mt-3 h-11 w-full"
+        className="press mt-4 h-12 w-full"
         onClick={() => {
           buzz();
           const snap = snapshot();
@@ -160,7 +160,7 @@ function InspectCard({ room, onSendBack }: { room: Room; onSendBack: () => void 
   const { dispatch, state, snapshot } = useStore();
   const who = staffById(room.assignee);
   return (
-    <motion.article {...cardMotion} className="rounded-2xl border bg-card p-3">
+    <motion.article {...cardMotion} className="rounded-3xl border bg-card p-5">
       <div className="flex items-center gap-3">
         <span className="tabular text-3xl font-bold">{room.id}</span>
         <div className="flex-1 text-sm">
@@ -170,12 +170,12 @@ function InspectCard({ room, onSendBack }: { room: Room; onSendBack: () => void 
           <p className="text-muted-foreground">{room.arrival ? `Guest arrives ${fmtTime(room.arrival)}` : "No arrival today"}</p>
         </div>
       </div>
-      <div className="mt-3 flex gap-2">
-        <Button variant="outline" className="press h-11 flex-1" onClick={onSendBack}>
+      <div className="mt-4 flex gap-3">
+        <Button variant="outline" className="press h-12 flex-1" onClick={onSendBack}>
           <RotateCcw /> Send back
         </Button>
         <Button
-          className="press h-11 flex-[1.4] bg-st-ready hover:bg-st-ready/90"
+          className="press h-12 flex-[1.4] bg-st-ready hover:bg-st-ready/90"
           onClick={() => {
             buzz(16);
             const snap = snapshot();
@@ -198,7 +198,7 @@ function Tile({ room, flagged }: { room: Room; flagged: boolean }) {
   const Icon = m.icon;
   const who = staffById(room.assignee);
   return (
-    <div className={cn("relative rounded-xl p-2 transition-colors duration-300", m.bg)}>
+    <div className={cn("relative rounded-xl p-2.5 transition-colors duration-300", m.bg)}>
       {flagged && (
         <span className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-st-dirty text-white ring-2 ring-background">
           <Flag className="size-3" />

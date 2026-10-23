@@ -54,7 +54,10 @@ A mobile-first web app (Next.js + Tailwind + shadcn/ui) with one flow done prope
 - **Ordered by urgency, with the reason shown on the card:** "Early check-in in 49 min · 10:30 AM" in red, "Guest arrives in 1h 19m" in amber, "Checked out · no arrival yet", "Guest staying · tidy while they're out". Order: room in progress → sent back → empty rooms with arrivals (rush first) → empty rooms → stayovers.
 - **Plain-language status with colour + icon + words, never colour alone:** Needs cleaning → Cleaning now → Clean · awaiting check → Ready for guest. A 4-step progress bar on every card shows where the room is in its day.
 - **One tap to start, one tap to finish, right from the list.** The card turns into a live timer (it goes red past the planned time), then "Done — room is clean". Every change gets an **Undo** toast instead of an "Are you sure?" dialog, because a confirm step slows down 99 correct taps to protect against 1 mistake.
-- **Details on demand:** tapping a card opens a bottom sheet (next guest, occupancy, clean type, beds, front-desk note, reported issues), not a separate page.
+- **Where to walk:** every card says "Room 207 · Floor 2 · East wing". The details sheet shows a small corridor map with the door, stairs and lift.
+- **Three tabs instead of one long scroll:** *To do / Later / Done*, with live counts that pop when a room moves between them.
+- **Details on demand, iOS-style:** tapping a card opens a half-height sheet with just what's needed to act (location, why now, Start / Issue). Drag up or tap *More details* to expand: all guest requests (there can be several, with quantity and source), special instructions (allergies, suite steps), room progress, the corridor map, room facts, reported issues, and today's timeline.
+- **Room progress spelled out:** "Step 1 of 4 · Needs cleaning — Next: you start cleaning", with named steps (To clean → Cleaning → Inspection → Ready). Finished steps get green ticks and the current step is dark, so colour never carries the meaning alone.
 
 **New feature — report an issue in two taps**
 - Every card has an **Issue** button. Tap it, then tap what's wrong. It's sent on that second tap.
@@ -75,6 +78,7 @@ A mobile-first web app (Next.js + Tailwind + shadcn/ui) with one flow done prope
 | Housekeeper list: urgency order, visual status, one-tap start/finish, undo | Real auth, multi-property, roles & permissions |
 | Two-tap issue reporting with routing, Later queue, optional photo/note | Maintenance work-order lifecycle (assign, parts, SLA) |
 | Supervisor: issue inbox, inspect/send back, board | Room assignment / workload balancing |
+| Plain words + icons on every status (helps second-language readers) | Language switching & accessibility settings (next, see below) |
 | Shared-phone sign-on with "Continue as last user" | Offline queue & sync, push notifications |
 | Simulated clock, fake hotel data, local persistence, reset | PMS integration (arrivals, checkouts) |
 
@@ -89,7 +93,13 @@ Guardrail for the feature: **share of room issues reported in-app vs. by radio o
 
 ### What I'd build next
 1. **Live arrivals from the PMS** plus a front-desk "rush this room" button. That makes the urgency order real.
-2. **Offline-first sync** (queued changes with a visible synced/pending state), because hallways and stairwells have bad Wi-Fi.
-3. **Workload-aware assignment** for supervisors: balance by minutes and floor, not room count, and notify the housekeeper when a room is added.
-4. **Maintenance close-out** with a resolution note/photo that automatically clears the room flag and tells the front desk.
-5. Measure: instrument tap-to-status time and report rates to check the success metric.
+2. **One-tap language switching, plus personal accessibility settings.** Many housekeepers work in a second language, and the people who'd struggle most with "Clean Vacant dirty" are the ones the app most needs to reach.
+   - **The switcher is where people already are:** on the "Who's working?" screen and in the header, showing each language's own name (Español, Kreyòl, Tagalog, Português, 中文…). It's one tap with no settings menu.
+   - **Saved per person, not per phone.** Phones are shared, so Maya's language follows her PIN. Priya picks up the same phone and sees hers.
+   - **Free text is translated too, not just the UI.** Guest requests and special instructions show in the housekeeper's language, with the original one tap away so nothing gets lost. Issue reports work the other way: Maya reports in Spanish and maintenance reads it in English. Short labels plus icons (already in this MVP) keep translations reliable and quick to scan.
+   - **Accessibility settings, also saved per person:** larger text, a high-contrast mode, less motion, haptics on/off, a left-handed layout (main buttons on the left), and read-aloud for room details and requests. By default, the app follows whatever the phone is already set to.
+   - **Measure it:** how many staff use a language other than English, and whether tap-to-status time and in-app reports improve for them.
+3. **Offline-first sync** (queued changes with a visible synced/pending state), because hallways and stairwells have bad Wi-Fi.
+4. **Workload-aware assignment** for supervisors: balance by minutes and floor, not room count, and notify the housekeeper when a room is added.
+5. **Maintenance close-out** with a resolution note/photo that automatically clears the room flag and tells the front desk.
+6. Measure: instrument tap-to-status time and report rates to check the success metric.

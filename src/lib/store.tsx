@@ -39,7 +39,7 @@ type Action =
   | { type: "restore"; snap: Snapshot }
   | { type: "reset" };
 
-const KEY = "lance-ops-demo-v1";
+const KEY = "lance-ops-demo-v2";
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 function fresh(): State {

@@ -8,18 +8,18 @@ import { fmtTime } from "@/lib/meta";
 import { useStore } from "@/lib/store";
 import { Avatar } from "./status";
 
-export function TopBar({ me: meId, title, subtitle }: { me: StaffId; title: string; subtitle?: React.ReactNode }) {
+export function TopBar({ me: meId, title, subtitle, below }: { me: StaffId; title: string; subtitle?: React.ReactNode; below?: React.ReactNode }) {
   const { now, dispatch } = useStore();
   const me = staffById(meId)!;
   return (
-    <header className="sticky top-0 z-20 border-b bg-background/85 px-4 pt-[max(env(safe-area-inset-top),12px)] pb-3 backdrop-blur-md">
+    <header className="sticky top-0 z-20 border-b bg-background/85 px-5 pt-[max(env(safe-area-inset-top),16px)] pb-4 backdrop-blur-md">
       <div className="flex items-center gap-3">
         <Avatar staff={me} size={40} />
         <div className="min-w-0 flex-1">
           <p className="text-xs text-muted-foreground">
             {me.short} · <span className="tabular">{fmtTime(now)}</span>
           </p>
-          <h1 className="text-xl leading-tight font-bold">{title}</h1>
+          <h1 className="text-2xl leading-tight font-bold">{title}</h1>
         </div>
         <button
           onClick={() => {
@@ -39,7 +39,8 @@ export function TopBar({ me: meId, title, subtitle }: { me: StaffId; title: stri
           <LogOut className="size-4" /> Switch
         </button>
       </div>
-      {subtitle && <div className="mt-2 text-sm text-muted-foreground">{subtitle}</div>}
+      {subtitle && <div className="mt-3 text-sm text-muted-foreground">{subtitle}</div>}
+      {below && <div className="mt-4">{below}</div>}
     </header>
   );
 }

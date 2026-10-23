@@ -39,12 +39,16 @@ export type Room = {
   assignee: StaffId | null;
   arrival?: number; // next guest arrival (min since midnight)
   rush?: boolean; // front desk flagged early check-in
-  note?: string; // from front desk
+  requests?: GuestRequest[]; // guest asks, can be several
+  instructions?: string[]; // custom notes for this room (allergies, suite steps…)
+  checkedOutAt?: number;
   startedAt?: number; // real ms timestamp
   finishedAt?: number; // sim minutes
   later?: { reason: IssueKind; until: number }; // can't clean now
   sentBack?: string; // supervisor failed inspection
 };
+
+export type GuestRequest = { text: string; from: "Guest app" | "Front desk" | "Guest note"; at: number; qty?: number };
 
 export type IssueKind =
   | "dnd"
@@ -80,11 +84,25 @@ export const SEED_ROOMS: Room[] = [
   // ---- Maya's board (the demo protagonist) ----
   { id: "102", floor: 1, bed: "Queen", occupancy: "empty", cleanType: "checkout", minutes: 30, status: "ready", assignee: "maya", finishedAt: t(8, 52) },
   { id: "103", floor: 1, bed: "King", occupancy: "empty", cleanType: "checkout", minutes: 30, status: "clean", assignee: "maya", finishedAt: t(9, 34) },
-  { id: "104", floor: 1, bed: "2 Queens", occupancy: "guest", cleanType: "stayover", minutes: 15, status: "dirty", assignee: "maya" },
-  { id: "105", floor: 1, bed: "King", occupancy: "guest", cleanType: "stayover", minutes: 15, status: "dirty", assignee: "maya", note: "Guest asked for extra towels" },
-  { id: "106", floor: 1, bed: "Suite", occupancy: "empty", cleanType: "checkout", minutes: 45, status: "dirty", assignee: "maya" },
-  { id: "205", floor: 2, bed: "King", occupancy: "empty", cleanType: "checkout", minutes: 30, status: "dirty", assignee: "maya", arrival: t(11, 0), note: "Anniversary — rose petals on bed" },
-  { id: "207", floor: 2, bed: "King", occupancy: "empty", cleanType: "checkout", minutes: 30, status: "dirty", assignee: "maya", arrival: t(10, 30), rush: true },
+  { id: "104", floor: 1, bed: "2 Queens", occupancy: "guest", cleanType: "stayover", minutes: 15, status: "dirty", assignee: "maya",
+    requests: [{ text: "Baby crib", from: "Front desk", at: t(9, 10) }] },
+  { id: "105", floor: 1, bed: "King", occupancy: "guest", cleanType: "stayover", minutes: 15, status: "dirty", assignee: "maya",
+    requests: [
+      { text: "Extra bath towels", qty: 2, from: "Guest app", at: t(8, 50) },
+      { text: "Please don't move papers on the desk", from: "Guest note", at: t(7, 30) },
+    ] },
+  { id: "106", floor: 1, bed: "Suite", occupancy: "empty", cleanType: "checkout", minutes: 45, status: "dirty", assignee: "maya", checkedOutAt: t(9, 0),
+    instructions: ["Suite: clean both bathrooms", "Restock kitchenette — 4 coffee pods, 2 mugs"] },
+  { id: "205", floor: 2, bed: "King", occupancy: "empty", cleanType: "checkout", minutes: 30, status: "dirty", assignee: "maya", arrival: t(11, 0), checkedOutAt: t(8, 5),
+    requests: [
+      { text: "Rose petals on the bed — anniversary", from: "Front desk", at: t(8, 15) },
+      { text: "Feather pillows", qty: 2, from: "Guest app", at: t(8, 40) },
+      { text: "Champagne bucket with ice by 10:50", from: "Front desk", at: t(9, 2) },
+    ],
+    instructions: ["Leave the welcome card from front desk on the pillows"] },
+  { id: "207", floor: 2, bed: "King", occupancy: "empty", cleanType: "checkout", minutes: 30, status: "dirty", assignee: "maya", arrival: t(10, 30), rush: true, checkedOutAt: t(7, 48),
+    requests: [{ text: "Early check-in for a loyalty member", from: "Front desk", at: t(9, 25) }],
+    instructions: ["Guest has a fragrance allergy — use the unscented spray only"] },
 
   // ---- Rest of the hotel ----
   { id: "101", floor: 1, bed: "Queen", occupancy: "guest", cleanType: "stayover", minutes: 15, status: "ready", assignee: "rosa", finishedAt: t(9, 5) },

@@ -44,7 +44,7 @@ export function IssueSheet({ roomId, open, onOpenChange }: { roomId: string | nu
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="mx-auto max-w-[440px] pb-[env(safe-area-inset-bottom)]">
+      <DrawerContent className="mx-auto max-w-110 pb-[env(safe-area-inset-bottom)]">
         <AnimatePresence mode="popLayout" initial={false}>
           {!sent ? (
             <motion.div
@@ -54,11 +54,11 @@ export function IssueSheet({ roomId, open, onOpenChange }: { roomId: string | nu
               exit={{ opacity: 0, transform: "translateX(-16px)" }}
               transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
             >
-              <DrawerHeader className="pb-2 !text-left">
+              <DrawerHeader className="px-5 pt-5 pb-2 text-left!">
                 <DrawerTitle className="text-xl">What&apos;s up with {roomId}?</DrawerTitle>
                 <DrawerDescription>Tap one — it sends right away.</DrawerDescription>
               </DrawerHeader>
-              <div className="max-h-[65dvh] overflow-y-auto overscroll-contain px-4 pb-5">
+              <div className="max-h-[65dvh] overflow-y-auto overscroll-contain px-5 pb-8">
                 <Group title="Can't clean right now">
                   {PAUSE.map((k) => (
                     <Tile key={k} kind={k} onPick={send} tone="pause" />
@@ -90,9 +90,9 @@ export function IssueSheet({ roomId, open, onOpenChange }: { roomId: string | nu
 
 function Group({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="mt-3">
-      <h3 className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">{title}</h3>
-      <div className="grid grid-cols-3 gap-2">{children}</div>
+    <section className="mt-6 first:mt-3">
+      <h3 className="mb-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">{title}</h3>
+      <div className="grid grid-cols-3 gap-3">{children}</div>
     </section>
   );
 }
@@ -104,7 +104,7 @@ function Tile({ kind, onPick, tone }: { kind: IssueKind; onPick: (k: IssueKind) 
     <button
       onClick={() => onPick(kind)}
       className={cn(
-        "press flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border px-1.5 py-3 text-center text-[13px] leading-tight font-semibold",
+        "press flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl border px-1.5 py-3 text-center text-[13px] leading-tight font-semibold",
         tone === "pause" ? "bg-st-cleaning-bg/60 active:bg-st-cleaning-bg" : "bg-card active:bg-muted",
         kind === "other" && "col-span-3 min-h-14 flex-row py-2",
       )}
@@ -132,7 +132,7 @@ function Sent({ issue, onUndo, onDone }: { issue: Issue; onUndo: () => void; onD
   };
 
   return (
-    <div className="px-5 pt-4 pb-5">
+    <div className="px-6 pt-5 pb-8">
       <div className="flex items-center gap-3">
         <motion.span
           initial={{ opacity: 0, transform: "scale(0.6)" }}
@@ -210,7 +210,7 @@ function Sent({ issue, onUndo, onDone }: { issue: Issue; onUndo: () => void; onD
         <Button variant="ghost" size="lg" className="press h-12 flex-1" onClick={onUndo}>
           <Undo2 /> Undo
         </Button>
-        <Button size="lg" className="press h-12 flex-[2] text-base" onClick={onDone}>
+        <Button size="lg" className="press h-12 flex-2 text-base" onClick={onDone}>
           Done
         </Button>
       </div>

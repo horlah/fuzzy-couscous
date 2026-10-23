@@ -1,6 +1,6 @@
 import {
   AirVent,
-  BedDouble,
+  SprayCan,
   Brush,
   CircleCheck,
   CircleHelp,
@@ -19,7 +19,7 @@ import {
   ShieldCheck,
   Timer,
 } from "lucide-react";
-import type { CleanType, IssueKind, Occupancy, RoomStatus, StaffId } from "./data";
+import type { CleanType, IssueKind, Occupancy, Room, RoomStatus, StaffId } from "./data";
 
 /** Plain-language status: what it means for the person holding the phone. */
 export const STATUS: Record<
@@ -28,7 +28,7 @@ export const STATUS: Record<
 > = {
   dirty: {
     label: "Needs cleaning",
-    short: "Dirty",
+    short: "To clean",
     icon: Brush,
     fg: "text-st-dirty",
     bg: "bg-st-dirty-bg",
@@ -48,7 +48,7 @@ export const STATUS: Record<
   },
   clean: {
     label: "Clean · awaiting check",
-    short: "To inspect",
+    short: "Inspection",
     icon: Sparkles,
     fg: "text-st-clean",
     bg: "bg-st-clean-bg",
@@ -76,7 +76,7 @@ export const OCCUPANCY: Record<Occupancy, { label: string; icon: LucideIcon }> =
 };
 
 export const CLEAN_TYPE: Record<CleanType, { label: string; icon: LucideIcon }> = {
-  checkout: { label: "Full clean", icon: BedDouble },
+  checkout: { label: "Full clean", icon: SprayCan },
   stayover: { label: "Quick tidy", icon: Sparkles },
 };
 
@@ -129,4 +129,13 @@ export function fmtAgo(min: number) {
 export function fmtTimer(ms: number) {
   const s = Math.max(0, Math.floor(ms / 1000));
   return `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
+}
+
+/** Where the room physically is. Rooms are numbered floor + position: 207 = floor 2, door 07. */
+export function locationOf(room: Pick<Room, "id" | "floor">) {
+  const pos = Number(room.id.slice(-2));
+  const wing = pos <= 3 ? "West wing" : "East wing";
+  const landmark =
+    ["by the stairs", "between the stairs and lift", "next to the lift", "across from the lift", "middle of the hall", "middle of the hall", "end of the hall"][pos - 1] ?? "on this floor";
+  return { floor: room.floor, floorLabel: `Floor ${room.floor}`, wing, landmark, pos };
 }

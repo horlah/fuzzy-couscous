@@ -145,7 +145,7 @@ function PinPad({ staffId, onBack, onDone }: { staffId: StaffId; onBack: () => v
           That PIN didn&apos;t match. Try {DEMO_PIN}.
         </p>
       </div>
-      <div className="mx-auto mt-auto grid w-full max-w-[300px] grid-cols-3 gap-3">
+      <div className="mx-auto mt-auto grid w-full max-w-75 grid-cols-3 gap-3">
         {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((d) => (
           <Key key={d} onPress={() => press(d)}>
             {d}

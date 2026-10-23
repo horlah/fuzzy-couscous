@@ -1,8 +1,46 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark *));
+
+/* ---------- shadcn/ui tokens (new-york, neutral) ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.75rem;
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.52 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+  /* ---------- Room status system: colour + icon + word, never colour alone ---------- */
+  --st-dirty: oklch(0.58 0.2 25);
+  --st-dirty-bg: oklch(0.96 0.03 25);
+  --st-cleaning: oklch(0.62 0.15 65);
+  --st-cleaning-bg: oklch(0.97 0.04 85);
+  --st-clean: oklch(0.55 0.15 250);
+  --st-clean-bg: oklch(0.96 0.025 250);
+  --st-ready: oklch(0.55 0.14 155);
+  --st-ready-bg: oklch(0.96 0.035 155);
+  --st-blocked: oklch(0.5 0.02 270);
+  --st-blocked-bg: oklch(0.95 0.008 270);
+
+  /* ---------- Motion tokens (Emil Kowalski) ---------- */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @theme inline {
@@ -10,17 +48,122 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-st-dirty: var(--st-dirty);
+  --color-st-dirty-bg: var(--st-dirty-bg);
+  --color-st-cleaning: var(--st-cleaning);
+  --color-st-cleaning-bg: var(--st-cleaning-bg);
+  --color-st-clean: var(--st-clean);
+  --color-st-clean-bg: var(--st-clean-bg);
+  --color-st-ready: var(--st-ready);
+  --color-st-ready-bg: var(--st-ready-bg);
+  --color-st-blocked: var(--st-blocked);
+  --color-st-blocked-bg: var(--st-blocked-bg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: light;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+  }
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* stops iOS zoom-on-focus */
+  }
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Press feedback on pointer-down, for every tappable. 100–160ms ease-out. */
+.press {
+  transition: transform 120ms var(--ease-out), background-color 120ms ease, opacity 120ms ease;
+}
+.press:active {
+  transform: scale(0.97);
+}
+
+/* Live "in progress" dot — state indication, gentle and slow */
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.live-dot {
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+/* Wrong-PIN shake: feedback, short, transform-only */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-8px);
+  }
+  40%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+.shake {
+  animation: shake 320ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press:active {
+    transform: none;
+    opacity: 0.8;
+  }
+  .live-dot {
+    animation: none;
+  }
+  .shake {
+    animation: none;
+  }
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
